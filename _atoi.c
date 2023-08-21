@@ -49,7 +49,6 @@ int custom_atoi(char *s)
 {
         int i, sign = 1, flag = 0, output;
         unsigned int result = 0;
-
         for (i = 0; s[i] != '\0' && flag != 2; i++)
         {
                 if (s[i] == '-')
