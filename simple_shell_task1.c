@@ -3,74 +3,65 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <stdio.h>
-
+#include <string.h>
 #define PROMPT "#cisfun$ "
-#define MAX_INPUT_LENGTH 1024
-
+#define MAX_INPUT_LENGTH 1024/**
+			      * checknr - check number readed
+			      * @nread: number read
+			      */
+void checknr(int nread)
+{
+	if (nread == -1)
+	{
+		perror("getline");
+		exit(EXIT_FAILURE);
+	}
+	else if (nread == 1)
+	{
+		write(STDOUT_FILENO, "\n", 1);
+		exit(0);
+	}
+}
+/**
+ * main - shell main function
+ * Return: intger
+ */
 int main(void)
 {
-	char *input = NULL; /* Use getline for input */
+	char *input = NULL;
 	size_t n = 0;
-	char *token;
-	ssize_t nread;
-
-	while (1)
+	char *token[] = {NULL, NULL};
+	ssize_t nread;    while (1)
 	{
 		write(STDOUT_FILENO, PROMPT, sizeof(PROMPT) - 1);
-
-		/* Read input from user using getline */
 		nread = getline(&input, &n, stdin);
-
-		if (nread == -1)
-		{
-			perror("getline");
-			exit(EXIT_FAILURE);
-		}
-		else if (nread == 1)
-		{
-			/* Handle end of file (Ctrl+D) */
-			write(STDOUT_FILENO, "\n", 1);
-			break;
-		}
-
-		/* Remove the newline character at the end of the input */
 		input[nread - 1] = '\0';
-
-		/* Tokenize the input */
-		token = strtok(input, " "); /* Split by space */
-
-		if (token != NULL)
+		checknr(nread);
+		token[0] = strtok(input, " ");
+		if (token[0] != NULL)
 		{
-			/* Handle built-in command: exit */
-			if (strcmp(token, "exit") == 0)
+			if (strcmp(token[0], "exit") == 0)
 			{
-				free(input); /* Free allocated memory before exit */
+				free(input);
 				exit(EXIT_SUCCESS);
 			}
-
-			/* Fork and execute the command */
 			pid_t pid = fork();
 
 			if (pid == -1)
 				perror("fork");
 			else if (pid == 0)
 			{
-				/* Child process */
-				if (execve(token, &token, NULL) == -1)
+				if (execve(token[0], token, NULL) == -1)
 				{
 					perror("execve");
-					exit(EXIT_FAILURE);
 				}
 			}
 			else
-			{
-				/* Parent process */
-				waitpid(pid, NULL, 0); /* Wait for child to finish */
-			}
+				waitpid(pid, NULL, 0);
 		}
+		if (input)
+			free(input);
+		input = NULL;
 	}
-
-	free(input); /* Free allocated memory before exiting */
 	return (0);
 }
-
