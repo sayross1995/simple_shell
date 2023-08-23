@@ -5,7 +5,7 @@
 #include <sys/wait.h>
 #include <stdio.h>
 #include <string.h>
-#define PROMPT "#cisfun$ "
+#define PROMPT "$ "
 #define MAX_INPUT_LENGTH 1024/**
 			      * checknr - check number readed
 			      * @nread: number read
