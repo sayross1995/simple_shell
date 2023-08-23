@@ -14,10 +14,8 @@
 
 #define BUFSIZE 1024
 #define TOK_BUFSIZE 128
-#define TOK_DELIM " \t\r\n\a"
+#define TOK_DELIM " \n\a\t\r"
 
-/* Points to an array of pointers to strings called the "environment" */
-extern char **environ;
 
 
 /**
@@ -40,6 +38,9 @@ typedef struct data
 	char **_environ;
 	char *pid;
 } data_shell;
+
+/* points to an arrat of pointers "encironement"*/
+extern char **environ;
 
 /**
  * struct sep_list_s - single linked list
