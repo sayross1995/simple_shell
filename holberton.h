@@ -17,16 +17,6 @@
 #define TOK_DELIM " \n\a\t\r"
 
 
-/**
- * struct builtin_s - builtin struct for command args.
- * @name: name of the command builtin
- * @f: pointer to function
- */
-typedef struct builtin_s
-{
-	char *name;
-	int (*f)(data_shell *datash);
-} builtin_t;
 
 /**
  * struct data - struct that contains all relevant data on runtime
@@ -48,6 +38,17 @@ typedef struct data
 	char **_environ;
 	char *pid;
 } data_shell;
+
+/**
+ * struct builtin_s - builtin struct for command args.
+ * @name: name of the command builtin
+ * @f: pointer to function
+ */
+typedef struct builtin_s
+{
+        char *name;
+        int (*f)(data_shell *datash);
+} builtin_t;
 
 /* points to an arrat of pointers "encironement"*/
 extern char **environ;

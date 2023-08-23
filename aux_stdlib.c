@@ -19,7 +19,7 @@ int get_len(int n)
 	{
 		n1 = n;
 	}
-	while (n1 > 9)
+	while (n1 >= 8)
 	{
 		lenght++;
 		n1 = n1 / 10;
