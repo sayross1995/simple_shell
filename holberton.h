@@ -17,6 +17,16 @@
 #define TOK_DELIM " \n\a\t\r"
 
 
+/**
+ * struct builtin_s - builtin struct for command args.
+ * @name: name of the command builtin
+ * @f: pointer to function
+ */
+typedef struct builtin_s
+{
+	char *name;
+	int (*f)(data_shell *datash);
+} builtin_t;
 
 /**
  * struct data - struct that contains all relevant data on runtime
@@ -82,16 +92,6 @@ typedef struct r_var_list
 	struct r_var_list *next;
 } r_var;
 
-/**
- * struct builtin_s - Builtin struct for command args.
- * @name: The name of the command builtin i.e cd, exit, env
- * @f: data type pointer function.
- */
-typedef struct builtin_s
-{
-	char *name;
-	int (*f)(data_shell *datash);
-} builtin_t;
 
 /* aux_lists.c */
 sep_list *add_sep_node_end(sep_list **head, char sep);
