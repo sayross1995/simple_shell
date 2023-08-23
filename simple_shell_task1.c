@@ -4,12 +4,12 @@
 #include <sys/wait.h>
 #include <stdio.h>
 
-#define PROMPT "$ "
-
+#define PROMPT "#cisfun$ "
+#define MAX_INPUT_LENGTH 1024
 
 int main(void)
 {
-	char *input = NULL; 
+	char *input = NULL; // Use getline for input
 	size_t n = 0;
 	char *token;
 	ssize_t nread;
