@@ -1,70 +1,73 @@
 #include "main.h"
 
 /**
- * main - Entry point of the simple shell program
- * @ac: The argument count
- * @argv: Array of arguments
+ * free_data - frees data structure
  *
- * Return: Always 0
+ * @datash: data structure
+ * Return: no return
  */
-int main(int ac, char **argv)
+void free_data(data_shell *datash)
 {
-    char *line = NULL, *line_copy = NULL;
-    size_t len = 0;
-    ssize_t nread;
-    const char *delim = " \n";
-    int nbr_tokens = 0;
-    char *token;
-    int i;
+	unsigned int i;
 
-    (void)ac;
+	for (i = 0; datash->_environ[i]; i++)
+	{
+		free(datash->_environ[i]);
+	}
 
-    while (1)
-    {
-        printf("(simple_shell) $ ");
-        nread = getline(&line, &len, stdin);
+	free(datash->_environ);
+	free(datash->pid);
+}
 
-        if (nread == -1)
-        {
-            printf("Error: getline failed\n");
-            return (-1);
-        }
+/**
+ * set_data - Initialize data structure
+ *
+ * @datash: data structure
+ * @av: argument vector
+ * Return: no return
+ */
+void set_data(data_shell *datash, char **av)
+{
+	unsigned int i;
 
-        line_copy = malloc(sizeof(char) * nread);
-        if (line_copy == NULL)
-        {
-            printf("Error: malloc failed\n");
-            return (-1);
-        }
+	datash->av = av;
+	datash->input = NULL;
+	datash->args = NULL;
+	datash->status = 0;
+	datash->counter = 1;
 
-        strcpy(line_copy, line);
-        token = strtok(line, delim);
+	for (i = 0; environ[i]; i++)
+		;
 
-        while (token != NULL)
-        {
-            nbr_tokens++;
-            token = strtok(NULL, delim);
-        }
-        nbr_tokens++;
+	datash->_environ = malloc(sizeof(char *) * (i + 1));
 
-        argv = malloc(sizeof(char *) * nbr_tokens);
+	for (i = 0; environ[i]; i++)
+	{
+		datash->_environ[i] = _strdup(environ[i]);
+	}
 
-        token = strtok(line_copy, delim);
+	datash->_environ[i] = NULL;
+	datash->pid = aux_itoa(getpid());
+}
 
-        for (i = 0; token != 0; i++)
-        {
-            argv[i] = malloc(sizeof(char) * strlen(token));
-            strcpy(argv[i], token);
+/**
+ * main - Entry point
+ *
+ * @ac: argument count
+ * @av: argument vector
+ *
+ * Return: 0 on success.
+ */
+int main(int ac, char **av)
+{
+	data_shell datash;
+	(void) ac;
 
-            token = strtok(NULL, delim);
-        }
-        argv[i] = NULL;
-        execmd(argv);
-
-    }
-
-    free(line_copy);
-    free(line);
-
-    return (0);
+	signal(SIGINT, get_sigint);
+	set_data(&datash, av);
+	shell_loop(&datash);
+	free_data(&datash);
+	if (datash.status < 0)
+		return (255);
+	return (datash.status);
 }
